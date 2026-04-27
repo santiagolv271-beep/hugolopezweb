@@ -50,9 +50,9 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0 z-10">
+    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 flex-shrink-0 z-10 shadow-sm shadow-gray-100/80">
       {/* Title */}
-      <div>
+      <div key={currentPage} className="animate-slide-in">
         <h1 className="text-xl font-bold text-gray-900">{PAGE_LABELS[currentPage] || 'StockMaster Pro'}</h1>
         <p className="text-xs text-gray-400">{settings.businessName}</p>
       </div>
@@ -63,12 +63,12 @@ export default function Header() {
         <div ref={searchRef} className="relative">
           <button
             onClick={() => { setShowSearch(!showSearch); setTimeout(() => document.getElementById('header-search')?.focus(), 100) }}
-            className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 hover:bg-indigo-50 rounded-xl text-gray-400 hover:text-indigo-600 transition-all duration-200 hover:scale-110"
           >
             <Search size={18} />
           </button>
           {showSearch && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50">
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 animate-scale-in">
               <div className="p-3 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <Search size={16} className="text-gray-400" />
@@ -114,17 +114,17 @@ export default function Header() {
         <div ref={notifRef} className="relative">
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="relative p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
+            className="relative p-2 hover:bg-indigo-50 rounded-xl text-gray-400 hover:text-indigo-600 transition-all duration-200 hover:scale-110"
           >
-            <Bell size={18} />
+            <Bell size={18} className={unread > 0 ? 'animate-[wiggle_0.5s_ease-in-out]' : ''} />
             {unread > 0 && (
-              <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
                 {unread > 9 ? '9+' : unread}
               </span>
             )}
           </button>
           {showNotifs && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-96 flex flex-col">
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 max-h-96 flex flex-col animate-scale-in">
               <div className="flex items-center justify-between p-4 border-b border-gray-100">
                 <span className="font-semibold text-gray-900 text-sm">Notificaciones</span>
                 {notifications.length > 0 && (

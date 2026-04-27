@@ -27,6 +27,56 @@
   }
 }
 
+@layer components {
+  /* Card hover lift */
+  .card-hover {
+    @apply transition-all duration-200 ease-out;
+  }
+  .card-hover:hover {
+    @apply -translate-y-0.5 shadow-lg shadow-gray-200/60;
+  }
+
+  /* Button press feedback */
+  .btn-press {
+    @apply transition-all duration-100 active:scale-95 active:brightness-95;
+  }
+
+  /* Stagger children fade-in */
+  .stagger-children > * {
+    @apply animate-fade-in;
+  }
+  .stagger-children > *:nth-child(1)  { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2)  { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3)  { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4)  { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5)  { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(6)  { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(7)  { animation-delay: 360ms; }
+  .stagger-children > *:nth-child(8)  { animation-delay: 420ms; }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    @apply animate-shimmer rounded-lg;
+  }
+
+  /* Glow on focus inputs */
+  input:focus, select:focus, textarea:focus {
+    @apply transition-shadow duration-200;
+  }
+
+  /* Smooth badge pulse */
+  .badge-pulse {
+    @apply animate-pulse-slow;
+  }
+
+  /* Number counter style */
+  .stat-number {
+    @apply tabular-nums animate-count-up;
+  }
+}
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
@@ -34,5 +84,13 @@
   .scrollbar-thin::-webkit-scrollbar {
     width: 4px;
     height: 4px;
+  }
+
+  /* Subtle gradient border */
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, #6366f1, #8b5cf6) border-box;
+    border: 2px solid transparent;
   }
 }

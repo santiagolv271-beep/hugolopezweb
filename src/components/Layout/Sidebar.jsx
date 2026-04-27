@@ -85,19 +85,23 @@ export default function Sidebar() {
                   onClick={() => setPage(item.id)}
                   title={!sidebarOpen ? item.label : ''}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all duration-150
-                    relative group
+                    w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium
+                    relative group transition-all duration-200
                     ${active
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/40'
+                      : 'text-gray-400 hover:bg-gray-800/80 hover:text-white'
                     }
                     ${!sidebarOpen ? 'justify-center px-0' : ''}
                   `}
                 >
-                  <div className="relative flex-shrink-0">
+                  {/* Active left indicator */}
+                  {active && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-white rounded-r-full" />
+                  )}
+                  <div className={`relative flex-shrink-0 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110'}`}>
                     <Icon size={18} />
                     {badge && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
                         {badge > 9 ? '9+' : badge}
                       </span>
                     )}
@@ -106,14 +110,15 @@ export default function Sidebar() {
                     <span className="truncate">{item.label}</span>
                   )}
                   {sidebarOpen && badge && (
-                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center animate-pulse">
                       {badge}
                     </span>
                   )}
                   {/* Tooltip for collapsed state */}
                   {!sidebarOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md
-                      opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+                    <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-gray-800 text-white text-xs rounded-lg
+                      opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50
+                      transition-all duration-150 -translate-x-1 group-hover:translate-x-0 shadow-xl">
                       {item.label}
                     </div>
                   )}

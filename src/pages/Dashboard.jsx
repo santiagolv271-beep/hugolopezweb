@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useRef, useState } from 'react'
 import useStore from '../store/useStore'
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -14,26 +14,59 @@ import { formatCurrency, calcMargin } from '../utils/helpers'
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#14b8a6']
 
-const KPICard = ({ title, value, sub, icon: Icon, color, trend, trendValue }) => {
+// Animated number hook
+function useCountUp(target, duration = 900) {
+  const [current, setCurrent] = useState(0)
+  const raf = useRef(null)
+  useEffect(() => {
+    const start = performance.now()
+    const from = 0
+    const to = typeof target === 'number' ? target : 0
+    const tick = (now) => {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCurrent(Math.round(from + (to - from) * eased))
+      if (progress < 1) raf.current = requestAnimationFrame(tick)
+    }
+    raf.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf.current)
+  }, [target, duration])
+  return current
+}
+
+const KPICard = ({ title, value, sub, icon: Icon, color, trend, trendValue, delay = 0 }) => {
   const colorMap = {
-    indigo: { bg: 'bg-indigo-50', icon: 'bg-indigo-100 text-indigo-600', border: 'border-indigo-100' },
-    green:  { bg: 'bg-green-50',  icon: 'bg-green-100 text-green-600',   border: 'border-green-100' },
-    yellow: { bg: 'bg-yellow-50', icon: 'bg-yellow-100 text-yellow-600', border: 'border-yellow-100' },
-    red:    { bg: 'bg-red-50',    icon: 'bg-red-100 text-red-600',       border: 'border-red-100' },
-    blue:   { bg: 'bg-blue-50',   icon: 'bg-blue-100 text-blue-600',     border: 'border-blue-100' },
-    purple: { bg: 'bg-purple-50', icon: 'bg-purple-100 text-purple-600', border: 'border-purple-100' },
+    indigo: { bg: 'bg-indigo-50', icon: 'bg-indigo-100 text-indigo-600', border: 'border-indigo-100', accent: 'bg-indigo-600' },
+    green:  { bg: 'bg-green-50',  icon: 'bg-green-100 text-green-600',   border: 'border-green-100',  accent: 'bg-green-600' },
+    yellow: { bg: 'bg-yellow-50', icon: 'bg-yellow-100 text-yellow-600', border: 'border-yellow-100', accent: 'bg-yellow-500' },
+    red:    { bg: 'bg-red-50',    icon: 'bg-red-100 text-red-600',       border: 'border-red-100',    accent: 'bg-red-600' },
+    blue:   { bg: 'bg-blue-50',   icon: 'bg-blue-100 text-blue-600',     border: 'border-blue-100',   accent: 'bg-blue-600' },
+    purple: { bg: 'bg-purple-50', icon: 'bg-purple-100 text-purple-600', border: 'border-purple-100', accent: 'bg-purple-600' },
   }
   const c = colorMap[color] || colorMap.indigo
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay)
+    return () => clearTimeout(t)
+  }, [delay])
 
   return (
-    <div className={`bg-white rounded-2xl border ${c.border} p-5 hover:shadow-md transition-shadow`}>
+    <div
+      className={`bg-white rounded-2xl border ${c.border} p-5 card-hover btn-press cursor-default
+        transition-all duration-300 group overflow-hidden relative
+        ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {/* Accent line top */}
+      <div className={`absolute top-0 left-0 right-0 h-0.5 ${c.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-gray-500 font-medium">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1 stat-number">{value}</p>
           {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
         </div>
-        <div className={`p-3 rounded-xl ${c.icon}`}>
+        <div className={`p-3 rounded-xl ${c.icon} group-hover:scale-110 transition-transform duration-200`}>
           <Icon size={22} />
         </div>
       </div>
@@ -176,6 +209,7 @@ export default function Dashboard() {
           color="indigo"
           trend={revenueTrend >= 0 ? 'up' : 'down'}
           trendValue={`${Math.abs(revenueTrend)}%`}
+          delay={0}
         />
         <KPICard
           title="Semana (7d)"
@@ -183,6 +217,7 @@ export default function Dashboard() {
           sub="Últimos 7 días"
           icon={TrendingUp}
           color="green"
+          delay={80}
         />
         <KPICard
           title="Mes (30d)"
@@ -190,6 +225,7 @@ export default function Dashboard() {
           sub="Últimos 30 días"
           icon={DollarSign}
           color="purple"
+          delay={160}
         />
         <KPICard
           title="Valor inventario"
@@ -197,6 +233,7 @@ export default function Dashboard() {
           sub={`${products.length} productos`}
           icon={Boxes}
           color="blue"
+          delay={240}
         />
         <KPICard
           title="Alertas stock"
@@ -204,12 +241,14 @@ export default function Dashboard() {
           sub={`${outOfStock.length} sin stock`}
           icon={AlertTriangle}
           color={outOfStock.length > 0 ? 'red' : 'yellow'}
+          delay={320}
         />
         <KPICard
           title="Proveedores"
           value={suppliers.length}
           sub={`${pendingPurchases} compras pend.`}
           icon={Users}
+          delay={400}
           color="indigo"
         />
       </div>

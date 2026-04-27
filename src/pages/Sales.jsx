@@ -184,14 +184,15 @@ export default function Sales() {
 
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {filteredProducts.slice(0, 24).map(p => (
+              {filteredProducts.slice(0, 24).map((p, i) => (
                 <button
                   key={p.id}
                   onClick={() => addToCart(p)}
-                  className="bg-white rounded-xl border border-gray-100 p-3 text-left hover:border-indigo-300 hover:shadow-md transition-all group"
+                  className="bg-white rounded-xl border border-gray-100 p-3 text-left hover:border-indigo-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group active:scale-95 animate-fade-in"
+                  style={{ animationDelay: `${Math.min(i * 25, 400)}ms` }}
                 >
-                  <div className="w-full aspect-square bg-indigo-50 rounded-lg flex items-center justify-center mb-2 group-hover:bg-indigo-100 transition-colors">
-                    <Package size={24} className="text-indigo-400" />
+                  <div className="w-full aspect-square bg-indigo-50 rounded-lg flex items-center justify-center mb-2 group-hover:bg-indigo-100 group-hover:scale-105 transition-all duration-200">
+                    <Package size={24} className="text-indigo-400 group-hover:scale-110 transition-transform duration-200" />
                   </div>
                   <p className="text-xs font-semibold text-gray-900 truncate leading-tight">{p.name}</p>
                   <p className="text-sm font-bold text-indigo-700 mt-1">{formatCurrency(p.salePrice, sym)}</p>
@@ -232,7 +233,7 @@ export default function Sales() {
                   <p className="text-sm text-gray-400">Agregá productos al carrito</p>
                 </div>
               ) : cart.map(item => (
-                <div key={item.productId} className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl">
+                <div key={item.productId} className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl animate-slide-up hover:bg-gray-100/80 transition-colors duration-150">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-900 truncate">{item.name}</p>
                     <p className="text-xs text-gray-500">{formatCurrency(item.price, sym)} c/u</p>

@@ -143,16 +143,16 @@ export default function Inventory() {
           <p className="text-sm text-gray-500">{filtered.length} productos · Valor costo: <strong>{formatCurrency(totalValue, sym)}</strong> · Valor venta: <strong>{formatCurrency(totalSaleValue, sym)}</strong></p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-all duration-150 active:scale-95 hover:-translate-y-0.5 hover:shadow-sm">
             <Download size={15} /> Exportar
           </button>
           <button
             onClick={() => { setScanFor('search'); setShowScanner(true) }}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-all duration-150 active:scale-95 hover:-translate-y-0.5 hover:shadow-sm"
           >
             <ScanLine size={15} /> Escanear
           </button>
-          <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+          <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 text-sm bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-150 font-medium active:scale-95 hover:-translate-y-0.5 hover:shadow-md hover:shadow-indigo-300">
             <Plus size={15} /> Nuevo producto
           </button>
         </div>
@@ -239,15 +239,19 @@ export default function Inventory() {
                     </div>
                   </td>
                 </tr>
-              ) : filtered.map(p => {
+              ) : filtered.map((p, rowIdx) => {
                 const status = getStockStatus(p)
                 const expStatus = getExpirationStatus(p.expirationDate)
                 const margin = calcMargin(p.costPrice, p.salePrice)
                 return (
-                  <tr key={p.id} className="hover:bg-gray-50/70 transition-colors">
+                  <tr
+                    key={p.id}
+                    className="hover:bg-indigo-50/30 transition-all duration-150 group"
+                    style={{ animationDelay: `${Math.min(rowIdx * 30, 300)}ms` }}
+                  >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-100 group-hover:scale-105 transition-all duration-200">
                           <Package size={16} className="text-indigo-500" />
                         </div>
                         <div className="min-w-0">
